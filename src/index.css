@@ -25,17 +25,6 @@
     background: transparent !important;
     display: block;
   }
-
-  /* Overlay Container Styles */
-  #liquid-overlay {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 99999;
-    pointer-events: none;
-    background: transparent;
-  }
 }
 
 @layer utilities {
