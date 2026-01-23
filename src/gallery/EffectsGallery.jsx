@@ -1,31 +1,33 @@
 import { useState } from 'react';
-import LiquidEffect01, { effectMeta as liquidMeta } from '../effects/LiquidEffect01';
 import { Layers, Maximize2, Info } from 'lucide-react';
+import { effectMeta as liquidMeta } from '../effects/LiquidEffect01';
 
 const effects = [
-  { component: LiquidEffect01, meta: liquidMeta }
+  { meta: liquidMeta }
 ];
 
 export default function EffectsGallery() {
   const [activeEffectIndex, setActiveEffectIndex] = useState(0);
   const [showInfo, setShowInfo] = useState(true);
   const [showMenu, setShowMenu] = useState(true);
-
-  const ActiveEffect = effects[activeEffectIndex].component;
+  
+  // Note: The actual effect is mounted in App.jsx as a global overlay.
+  // This component now acts as the "website content" underneath.
   const activeMeta = effects[activeEffectIndex].meta;
 
   return (
-    <div className="relative w-full h-screen bg-black text-white overflow-hidden font-sans selection:bg-[#00ffff] selection:text-black">
-      {/* Background Effect */}
-      <div className="absolute inset-0 z-0">
-        <ActiveEffect className="w-full h-full" />
+    <div className="relative w-full min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black text-white overflow-hidden font-sans selection:bg-[#00ffff] selection:text-black">
+      
+      {/* Test Content Pattern to verify transparency */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '40px 40px' }}>
       </div>
 
       {/* Main UI Layer */}
-      <div className="relative z-10 w-full h-full pointer-events-none flex flex-col justify-between p-6 md:p-12">
+      <div className="relative z-10 w-full h-full flex flex-col justify-between p-6 md:p-12">
         
         {/* Header */}
-        <header className="pointer-events-auto flex justify-between items-start">
+        <header className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#00ffff] mix-blend-difference">
               Studio.C Effects Lab
@@ -45,20 +47,18 @@ export default function EffectsGallery() {
 
         {/* Floating Sidebar (Desktop) / Menu (Mobile) */}
         <div className={`
-          pointer-events-auto 
           fixed top-0 right-0 h-full w-80 bg-black/80 backdrop-blur-xl border-l border-white/5 p-8
           transform transition-transform duration-500 ease-out z-50
           ${showMenu ? 'translate-x-0' : 'translate-x-full'}
           md:relative md:transform-none md:w-80 md:h-auto md:bg-transparent md:backdrop-blur-none md:border-none md:p-0 md:block
           hidden
         `}>
-           {/* This logic needs to be cleaner. Let's separate the overlay panel logic. */}
         </div>
       </div>
       
       {/* Sidebar Overlay for Navigation */}
       <div className={`
-        pointer-events-auto fixed left-0 top-0 h-full w-full md:w-96 bg-black/90 backdrop-blur-2xl border-r border-white/5 p-8 md:p-12
+        fixed left-0 top-0 h-full w-full md:w-96 bg-black/80 backdrop-blur-2xl border-r border-white/5 p-8 md:p-12
         transform transition-transform duration-500 ease-[0.22, 1, 0.36, 1] z-40 flex flex-col
         ${showMenu ? 'translate-x-0' : '-translate-x-full'}
       `}>
@@ -114,14 +114,12 @@ export default function EffectsGallery() {
             </div>
           </div>
         </div>
-        
-        {/* Toggle Button placed on the edge if closed? No, let's have a separate toggle. */}
       </div>
 
       {/* Menu Toggle (Visible when menu is closed) */}
       <button 
         onClick={() => setShowMenu(!showMenu)}
-        className={`pointer-events-auto fixed top-8 left-8 z-50 p-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-md text-white transition-all duration-300 hover:border-[#00ffff]/50 hover:text-[#00ffff] ${showMenu ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`fixed top-8 left-8 z-50 p-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-md text-white transition-all duration-300 hover:border-[#00ffff]/50 hover:text-[#00ffff] ${showMenu ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
         <Layers className="w-5 h-5" />
       </button>
@@ -129,15 +127,14 @@ export default function EffectsGallery() {
       {/* Close Menu Button (Visible when menu is open) */}
       <button 
         onClick={() => setShowMenu(false)}
-        className={`pointer-events-auto fixed top-8 left-[21rem] md:left-[21rem] z-50 p-2 text-white/50 hover:text-white transition-all duration-500 ${showMenu ? 'opacity-100 delay-100' : 'opacity-0 pointer-events-none -translate-x-10'}`}
+        className={`fixed top-8 left-[21rem] md:left-[21rem] z-50 p-2 text-white/50 hover:text-white transition-all duration-500 ${showMenu ? 'opacity-100 delay-100' : 'opacity-0 pointer-events-none -translate-x-10'}`}
       >
          <span className="sr-only">Close</span>
-         {/* Simple X icon or similar */}
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
       {/* Info Overlay (Bottom Right) */}
-      <div className="pointer-events-auto fixed bottom-8 right-8 z-40 max-w-sm w-full">
+      <div className="fixed bottom-8 right-8 z-40 max-w-sm w-full">
          <div className={`transition-all duration-500 transform ${showInfo ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'}`}>
             <div className="bg-black/80 backdrop-blur-2xl border border-white/10 p-6 rounded-none border-l-2 border-l-[#00ffff]">
               <div className="flex justify-between items-start mb-2">

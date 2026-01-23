@@ -8,8 +8,33 @@
     --foreground: 0 0% 100%;
   }
   
+  /* Ensure transparent backgrounds for overlay visibility */
+  html, body, #root {
+    background: transparent !important;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  
   body {
-    @apply bg-black text-white antialiased;
+    @apply text-white antialiased;
+    background: transparent !important;
+  }
+  
+  canvas {
+    background: transparent !important;
+    display: block;
+  }
+
+  /* Overlay Container Styles */
+  #liquid-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    pointer-events: none;
+    background: transparent;
   }
 }
 

@@ -14,7 +14,7 @@ src/
       index.js
   gallery/           # Gallery UI components
     EffectsGallery.jsx
-  App.jsx            # Main entry point
+  App.jsx            # Main entry point (Mounts UI + Overlay)
   main.jsx           # React root
 ```
 
@@ -43,25 +43,56 @@ src/
    npm run dev
    ```
 
-## Adding New Effects
+## Using Effects as Overlay
 
-To add a new effect to the library:
+This project implements a **website-only transparent overlay** that floats above your UI.
 
-1. Create a new folder in `src/effects/` (e.g., `NewEffect02`).
-2. Create your component files:
-   - `NewEffect02.jsx`: The main React component.
-   - `styles.css`: Component-specific styles.
-   - `config.js`: Metadata (id, name, description, thumbnail) and default props.
-   - `index.js`: Exports the component and metadata.
-3. Import the new effect in `src/gallery/EffectsGallery.jsx` and add it to the `effects` array:
-   ```javascript
-   import NewEffect02, { effectMeta as newMeta } from '../effects/NewEffect02';
+### Usage in React
 
-   const effects = [
-     { component: LiquidEffect01, meta: liquidMeta },
-     { component: NewEffect02, meta: newMeta }
-   ];
-   ```
+To add the liquid effect overlay to your React app:
+
+1. Copy the `src/effects/LiquidEffect01` folder to your project.
+2. Import `LiquidEffect01` in your root component (e.g., `App.jsx`).
+3. Render it inside a fixed container **after** your main content:
+
+```jsx
+import LiquidEffect01 from './effects/LiquidEffect01';
+
+function App() {
+  return (
+    <>
+      {/* Your App Content */}
+      <YourMainContent />
+
+      {/* Overlay Container (Must be last to sit on top) */}
+      <div id="liquid-overlay" style={{ 
+        position: "fixed", 
+        inset: 0, 
+        width: "100vw", 
+        height: "100vh", 
+        zIndex: 99999, 
+        pointerEvents: "none", 
+        background: "transparent" 
+      }}> 
+        <LiquidEffect01 overlayMode={true} /> 
+      </div>
+    </>
+  );
+}
+```
+
+### Configuration
+
+You can customize the effect by passing props:
+
+```jsx
+<LiquidEffect01 
+  overlayMode={true}
+  metalness={0.9}
+  roughness={0.1}
+  enableRain={true}
+/>
+```
 
 ## Deployment
 

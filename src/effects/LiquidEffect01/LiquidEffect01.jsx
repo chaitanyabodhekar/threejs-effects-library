@@ -4,16 +4,29 @@ import "./styles.css";
 
 export default function LiquidEffect01({ 
   className = "", 
+  id = "liquid-canvas-01",
   imageUrl = defaultConfig.imageUrl,
   metalness = defaultConfig.metalness,
   roughness = defaultConfig.roughness,
   displacementScale = defaultConfig.displacementScale,
-  enableRain = defaultConfig.enableRain
+  enableRain = defaultConfig.enableRain,
+  overlayMode = false
 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Hack to force alpha: true on the WebGL context
+    const originalGetContext = canvas.getContext;
+    canvas.getContext = function(type, options) {
+      if (type === 'webgl' || type === 'webgl2') {
+        const newOptions = { ...options, alpha: true, antialias: true };
+        return originalGetContext.call(this, type, newOptions);
+      }
+      return originalGetContext.call(this, type, options);
+    };
 
     // Load the script dynamically
     const script = document.createElement("script");
@@ -21,33 +34,67 @@ export default function LiquidEffect01({
     script.textContent = `
       import LiquidBackground from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.22/build/backgrounds/liquid1.min.js';
 
-      const canvas = document.getElementById('liquid-canvas-01');
+      const canvas = document.getElementById('${id}');
       if (canvas) {
+        // Initialize app
         const app = LiquidBackground(canvas);
+        
+        // Configuration
         app.loadImage('${imageUrl}');
         app.liquidPlane.material.metalness = ${metalness};
         app.liquidPlane.material.roughness = ${roughness};
         app.liquidPlane.uniforms.displacementScale.value = ${displacementScale};
         app.setRain(${enableRain});
-        window.__liquidApp = app;
+        
+        // Force Transparency
+        if (app.renderer) {
+          app.renderer.setClearColor(0x000000, 0);
+          
+          if (app.scene) {
+            app.scene.background = null;
+          }
+        }
+        
+        window.__liquidApp_${id.replace(/[^a-zA-Z0-9]/g, '_')} = app;
       }
     `;
 
     document.body.appendChild(script);
 
     return () => {
-      if (window.__liquidApp && window.__liquidApp.dispose) {
-        window.__liquidApp.dispose();
+      canvas.getContext = originalGetContext;
+      const appInstance = window[\`__liquidApp_\${id.replace(/[^a-zA-Z0-9]/g, '_')}\`];
+      if (appInstance && appInstance.dispose) {
+        appInstance.dispose();
       }
       if (document.body.contains(script)) {
         document.body.removeChild(script);
       }
     };
-  }, [imageUrl, metalness, roughness, displacementScale, enableRain]);
+  }, [id, imageUrl, metalness, roughness, displacementScale, enableRain]);
 
   return (
-    <div className={`liquid-canvas-container ${className}`}>
-      <canvas ref={canvasRef} id="liquid-canvas-01" className="liquid-canvas" />
+    <div className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`} style={{
+      width: '100vw',
+      height: '100vh',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 99999, // High z-index to sit on top
+      pointerEvents: 'none', // Allow clicks to pass through
+      background: 'transparent'
+    }}>
+      <canvas 
+        ref={canvasRef} 
+        id={id} 
+        className="liquid-canvas" 
+        style={{ 
+          background: 'transparent', 
+          display: 'block', 
+          width: '100%', 
+          height: '100%' 
+        }} 
+      />
     </div>
   );
 }
