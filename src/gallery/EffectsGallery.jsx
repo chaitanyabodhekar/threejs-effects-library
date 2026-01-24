@@ -1,19 +1,20 @@
 import { useState } from 'react';
-import { Layers, Maximize2, Info } from 'lucide-react';
+import { Layers, Maximize2, Info, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { effectMeta as liquidMeta } from '../effects/LiquidEffect01';
 
 const effects = [
-  { meta: liquidMeta }
+  { meta: liquidMeta, path: '/effect/liquid' }
 ];
 
 export default function EffectsGallery() {
   const [activeEffectIndex, setActiveEffectIndex] = useState(0);
   const [showInfo, setShowInfo] = useState(true);
   const [showMenu, setShowMenu] = useState(true);
+  const navigate = useNavigate();
   
-  // Note: The actual effect is mounted in App.jsx as a global overlay.
-  // This component now acts as the "website content" underneath.
   const activeMeta = effects[activeEffectIndex].meta;
+  const activeEffectPath = effects[activeEffectIndex].path;
 
   return (
     <div className="relative w-full min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black text-white overflow-hidden font-sans selection:bg-[#00ffff] selection:text-black">
@@ -44,6 +45,20 @@ export default function EffectsGallery() {
             <Layers className="w-5 h-5" />
           </button>
         </header>
+
+        {/* Center CTA - Open Effect */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+            <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 tracking-tighter mb-8">
+              {activeMeta.name.split(' ')[0]}
+            </h2>
+            <button 
+              onClick={() => navigate(activeEffectPath)}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-[#00ffff] text-black font-bold uppercase tracking-widest hover:bg-white transition-all duration-300"
+            >
+              <span>View Effect</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+        </div>
 
         {/* Floating Sidebar (Desktop) / Menu (Mobile) */}
         <div className={`

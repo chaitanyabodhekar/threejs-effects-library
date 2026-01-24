@@ -32,6 +32,7 @@ export default function LiquidEffect01({
     const script = document.createElement("script");
     script.type = "module";
     script.textContent = `
+    script.onload = () => console.log("Liquid effect loaded");
       import LiquidBackground from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.22/build/backgrounds/liquid1.min.js';
 
       const canvas = document.getElementById('${id}');
@@ -59,7 +60,7 @@ export default function LiquidEffect01({
         ${overlayMode ? `
         if (app.liquidPlane && app.liquidPlane.material) {
            app.liquidPlane.material.transparent = true;
-           app.liquidPlane.material.opacity = 0.5; // Make it semi-transparent
+           app.liquidPlane.material.opacity = 1.0; // Make it semi-transparent
            // If the library supports it, we might want to set blending or other props
         }
         ` : ''}
@@ -87,26 +88,30 @@ export default function LiquidEffect01({
   }, [id, imageUrl, metalness, roughness, displacementScale, enableRain]);
 
   return (
-    <div 
-      className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`} 
-      style={{
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none', // Allow clicks to pass through
-        background: 'transparent'
-      }}
-    >
+    <div
+  className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`}
+  style={{
+    position: 'fixed',
+    inset: 0,
+    width: '100vw',
+    height: '100vh',
+    pointerEvents: 'none',
+    background: 'transparent',
+    zIndex: 10
+  }}
+>
+
       <canvas 
         ref={canvasRef} 
         id={id} 
         className="liquid-canvas" 
-        style={{ 
-          background: 'transparent', 
-          display: 'block', 
-          width: '100%', 
-          height: '100%',
-          pointerEvents: 'none'
-        }} 
+        style={{
+  background: 'transparent',
+  display: 'block',
+  width: '100vw',
+  height: '100vh'
+}}
+ 
       />
     </div>
   );
