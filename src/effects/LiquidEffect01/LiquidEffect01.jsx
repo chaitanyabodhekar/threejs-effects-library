@@ -40,7 +40,7 @@ export default function LiquidEffect01({
         const app = LiquidBackground(canvas);
         
         // Configuration
-        app.loadImage('${imageUrl}');
+        ${!overlayMode ? `app.loadImage('${imageUrl}');` : ''}
         app.liquidPlane.material.metalness = ${metalness};
         app.liquidPlane.material.roughness = ${roughness};
         app.liquidPlane.uniforms.displacementScale.value = ${displacementScale};
@@ -54,6 +54,15 @@ export default function LiquidEffect01({
             app.scene.background = null;
           }
         }
+
+        // Additional transparency for overlay mode
+        ${overlayMode ? `
+        if (app.liquidPlane && app.liquidPlane.material) {
+           app.liquidPlane.material.transparent = true;
+           app.liquidPlane.material.opacity = 0.5; // Make it semi-transparent
+           // If the library supports it, we might want to set blending or other props
+        }
+        ` : ''}
         
         window.__liquidApp_${id.replace(/[^a-zA-Z0-9]/g, '_')} = app;
       }
@@ -63,8 +72,12 @@ export default function LiquidEffect01({
 
     return () => {
       canvas.getContext = originalGetContext;
-      const appInstance = window[\`__liquidApp_\${id.replace(/[^a-zA-Z0-9]/g, '_')}\`];
-      if (appInstance && appInstance.dispose) {
+      
+      const safeId = String(id || "default").replace(/[^a-zA-Z0-9]/g, "_");
+      const key = "__liquidApp_" + safeId;
+      const appInstance = window[key];
+
+      if (appInstance && typeof appInstance.dispose === "function") {
         appInstance.dispose();
       }
       if (document.body.contains(script)) {
