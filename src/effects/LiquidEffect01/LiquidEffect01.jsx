@@ -87,16 +87,20 @@ export default function LiquidEffect01({
   }, [id, imageUrl, metalness, roughness, displacementScale, enableRain]);
 
   return (
-    <div className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`} style={{
-      width: '100vw',
-      height: '100vh',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 99999, // High z-index to sit on top
-      pointerEvents: 'none', // Allow clicks to pass through
-      background: 'transparent'
-    }}>
+    <div 
+      id="liquid-overlay"
+      className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`} 
+      style={{
+        width: '100vw',
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 10, // Changed to 10 as per requirements (was 99999)
+        pointerEvents: 'none', // Allow clicks to pass through
+        background: 'transparent'
+      }}
+    >
       <canvas 
         ref={canvasRef} 
         id={id} 
@@ -105,7 +109,8 @@ export default function LiquidEffect01({
           background: 'transparent', 
           display: 'block', 
           width: '100%', 
-          height: '100%' 
+          height: '100%',
+          pointerEvents: 'none'
         }} 
       />
     </div>

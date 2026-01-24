@@ -27,6 +27,18 @@
   }
 }
 
+#liquid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#app, #root, .app-root {
+  position: relative;
+  z-index: 20;
+}
+
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
