@@ -4,7 +4,9 @@ function App() {
   return (
     <>
       {/* Main App UI (Underlying Layer) */}
-      <EffectsGallery />
+      <div id="app-ui">
+        <EffectsGallery />
+      </div>
     </>
   );
 }

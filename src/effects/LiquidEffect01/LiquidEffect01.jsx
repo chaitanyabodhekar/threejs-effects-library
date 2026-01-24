@@ -88,15 +88,10 @@ export default function LiquidEffect01({
 
   return (
     <div 
-      id="liquid-overlay"
       className={`liquid-canvas-container ${overlayMode ? 'overlay-mode' : ''} ${className}`} 
       style={{
-        width: '100vw',
-        height: '100vh',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        zIndex: 10, // Changed to 10 as per requirements (was 99999)
+        width: '100%',
+        height: '100%',
         pointerEvents: 'none', // Allow clicks to pass through
         background: 'transparent'
       }}

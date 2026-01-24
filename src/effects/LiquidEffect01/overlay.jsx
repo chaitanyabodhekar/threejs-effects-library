@@ -26,7 +26,7 @@ export function mountLiquidOverlay(container = document.body, props = {}) {
   rootDiv.style.width = '100vw';
   rootDiv.style.height = '100vh';
   rootDiv.style.pointerEvents = 'none';
-  rootDiv.style.zIndex = '10';
+  rootDiv.style.zIndex = '9999';
   rootDiv.style.background = 'transparent'; // Ensure transparent background
 
   container.appendChild(rootDiv);
